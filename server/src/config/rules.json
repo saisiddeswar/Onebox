@@ -1,0 +1,37 @@
+[
+  {
+    "id": "r1",
+    "name": "Interested",
+    "category": "interested",
+    "priority": 100,
+    "keywords": ["interested", "learn more", "tell me more", "demo"]
+  },
+  {
+    "id": "r2",
+    "name": "Invoice",
+    "category": "invoice",
+    "priority": 90,
+    "keywords": ["invoice", "receipt", "amount due"]
+  },
+  {
+    "id": "r3",
+    "name": "Follow up",
+    "category": "follow_up",
+    "priority": 80,
+    "keywords": ["follow up", "following up", "any update"]
+  },
+  {
+    "id": "r4",
+    "name": "Job",
+    "category": "job",
+    "priority": 70,
+    "keywords": ["resume", "cv", "apply", "job application"]
+  },
+  {
+    "id": "r5",
+    "name": "Spam",
+    "category": "spam",
+    "priority": 10,
+    "keywords": ["lottery", "win money", "click here"]
+  }
+]

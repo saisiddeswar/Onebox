@@ -1,0 +1,56 @@
+import { emailQueue } from "../src/queue/queues";
+import { startImap } from "../src/imap/imapclient";
+
+jest.mock("bullmq", () => ({
+  Queue: jest.fn().mockImplementation(() => ({
+    add: jest.fn()
+  })),
+  Worker: jest.fn(),
+}));
+
+jest.mock("imapflow", () => ({
+  ImapFlow: jest.fn().mockImplementation(() => ({
+    connect: jest.fn(),
+    getMailboxLock: jest.fn().mockResolvedValue({
+      release: jest.fn()
+    }),
+    fetch: jest.fn().mockResolvedValue([
+      {
+        source: "From: test@gmail.com\nSubject: Invoice for your order",
+        envelope: {},
+        uid: 1
+      }
+    ]),
+    on: jest.fn(),
+    mailbox: { exists: 1 },
+    fetchOne: jest.fn()
+  })),
+}));
+
+jest.mock("mailparser", () => ({
+  simpleParser: jest.fn().mockResolvedValue({
+    subject: "Invoice for your order",
+    from: { text: "test@gmail.com" },
+    to: { text: "me@gmail.com" },
+    text: "Invoice email body",
+    date: new Date()
+  })
+}));
+
+
+describe("IMAP → Queue Integration", () => {
+
+  test("should enqueue parsed email", async () => {
+    await startImap(); // run the imap logic
+
+    // queue.add should be called once
+    expect(emailQueue.add).toHaveBeenCalledTimes(1);
+
+    const callData = (emailQueue.add as jest.Mock).mock.calls[0];
+
+    expect(callData[0]).toBe("incomingEmail");  // job name
+    expect(callData[1].subject).toBe("Invoice for your order"); // job data
+
+  });
+
+});
